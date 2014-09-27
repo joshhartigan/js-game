@@ -1,0 +1,27 @@
+html, body {
+  width: 500px;
+  margin: 20px auto;
+  font-family: Vollkorn, serif;
+}
+
+a {
+  color: #E50053;
+  text-decoration: none;
+} a:hover {
+  text-decoration: underline;
+}
+
+canvas {
+  margin-top: 20px;
+  background: #292724;
+}
+
+#title-main {
+  font-size: 40px;
+  display: inline;
+}
+
+#sub-title-main {
+  display: inline;
+  padding-left: 10px;
+}
