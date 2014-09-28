@@ -2,6 +2,8 @@ var canvas = document.getElementById("game-canvas");
 
 var ctx = canvas.getContext("2d");
 
+var loop;
+
 var WIDTH = 500,
     HEIGHT = 500;
 
@@ -14,7 +16,7 @@ var charHeight = 15;
 var MAX_PLAYER_X = (WIDTH / charWidth) * charWidth - charWidth;
 var MAX_PLAYER_Y = 33 * charHeight;
 
-var MONSTER_COUNT = Math.floor( Math.random() * (8 - 1) ) + 1;
+var MONSTER_COUNT = Math.floor( Math.random() * (15 - 5) ) + 5;
 var monsters;
 
 var points = 0;
@@ -85,31 +87,33 @@ var attack = function() {
   var monsterLeft  = arrayContains( monsters, [xPos - charWidth, yPos]);
   var monsterRight = arrayContains( monsters, [xPos + charWidth, yPos]);
 
-  ctx.fillStyle = "#F00";
+  var sound = new Audio("hit.wav");
+
+  if (monsterAbove || monsterBelow || monsterLeft || monsterRight) {
+    points += 1;
+    ctx.fillStyle = "#F00";
+    sound.play();
+  }
 
   if (monsterAbove) {
     monsterIndex = subArrayIndex( monsters, [xPos, yPos - charHeight] );
     monsters.splice(monsterIndex, 1);
     ctx.fillText("|", xPos, yPos - charHeight);
-    points += 1;
   }
   if (monsterBelow) {
     monsterIndex = subArrayIndex( monsters, [xPos, yPos + charHeight] );
     monsters.splice(monsterIndex, 1);
     ctx.fillText("|", xPos, yPos + charHeight);
-    points += 1;
   }
   if (monsterLeft) {
     monsterIndex = subArrayIndex( monsters, [xPos - charWidth, yPos] );
     monsters.splice(monsterIndex, 1);
     ctx.fillText("-", xPos - charWidth, yPos);
-    points += 1;
   }
   if (monsterRight) {
     monsterIndex = subArrayIndex( monsters, [xPos + charWidth, yPos] );
     monsters.splice(monsterIndex, 1);
     ctx.fillText("-", xPos + charWidth, yPos);
-    points += 1;
   }
 }
 
@@ -117,7 +121,7 @@ var start = function() {
   if (typeof loop != "undefined") {
     clearInterval(loop);
   }
-  var loop = setInterval(update, 60);
+  loop = setInterval(update, 60);
 
   // this will always stay the same,
   // so it is specified here
@@ -148,6 +152,10 @@ var checkForWin = function() {
     // fill screen
     ctx.fillStyle = "#292724";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    var sound = new Audio("win.wav");
+    sound.play();
+    clearInterval(loop);
 
     // show win text
     document.getElementById("win-message").style.display = "block";
