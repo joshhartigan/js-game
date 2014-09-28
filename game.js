@@ -42,7 +42,7 @@ document.onkeypress = function(evt) {
     movePlayer(keyCode);
   }
 
-  if (keyCode == 32) {
+  if (keyCode == 117) { // U
     attack();
   }
 }
