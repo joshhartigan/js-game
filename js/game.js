@@ -16,26 +16,9 @@ var charHeight = 15;
 var MAX_PLAYER_X = (WIDTH / charWidth) * charWidth - charWidth;
 var MAX_PLAYER_Y = 33 * charHeight;
 
-var MONSTER_COUNT = Math.floor( Math.random() * (15 - 5) ) + 5;
-var monsters;
-
 var points = 0;
 
 var updatesSinceLastTick = 0;
-
-var arrayContains = function(array, value) {
-  return array.some( function(row) {
-    return row.toString() == value.toString();
-  });
-};
-var subArrayIndex = function(array, sub) {
-  for (var i = 0; i < array.length; i++) {
-    if ( array[i].toString() == sub.toString() ) {
-      return i;
-    }
-  }
-  return -1;
-}
 
 document.onkeypress = function(evt) {
   evt = evt || window.event;
@@ -80,42 +63,6 @@ var movePlayer = function(keyCode) {
   if (keyCode == 112) { // p
     console.log(monsters);
     console.log(xPos, yPos);
-  }
-}
-
-var attack = function() {
-  var monsterAbove = arrayContains( monsters, [xPos, yPos - charHeight ]);
-  var monsterBelow = arrayContains( monsters, [xPos, yPos + charHeight ]);
-  var monsterLeft  = arrayContains( monsters, [xPos - charWidth, yPos]);
-  var monsterRight = arrayContains( monsters, [xPos + charWidth, yPos]);
-
-  var sound = new Audio("hit.wav");
-
-  if (monsterAbove || monsterBelow || monsterLeft || monsterRight) {
-    points += 1;
-    ctx.fillStyle = "#F00";
-    sound.play();
-  }
-
-  if (monsterAbove) {
-    monsterIndex = subArrayIndex( monsters, [xPos, yPos - charHeight] );
-    monsters.splice(monsterIndex, 1);
-    ctx.fillText("|", xPos, yPos - charHeight);
-  }
-  if (monsterBelow) {
-    monsterIndex = subArrayIndex( monsters, [xPos, yPos + charHeight] );
-    monsters.splice(monsterIndex, 1);
-    ctx.fillText("|", xPos, yPos + charHeight);
-  }
-  if (monsterLeft) {
-    monsterIndex = subArrayIndex( monsters, [xPos - charWidth, yPos] );
-    monsters.splice(monsterIndex, 1);
-    ctx.fillText("-", xPos - charWidth, yPos);
-  }
-  if (monsterRight) {
-    monsterIndex = subArrayIndex( monsters, [xPos + charWidth, yPos] );
-    monsters.splice(monsterIndex, 1);
-    ctx.fillText("-", xPos + charWidth, yPos);
   }
 }
 
@@ -181,7 +128,7 @@ var checkForWin = function() {
     ctx.fillStyle = "#292724";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    var sound = new Audio("win.wav");
+    var sound = new Audio("assets/win.wav");
     sound.play();
     clearInterval(loop);
 
@@ -189,26 +136,5 @@ var checkForWin = function() {
     document.getElementById("win-message").style.display = "block";
   }
 }
-
-var createMonsters = function() {
-  positions = [];
-
-  for (var i = 0; i < MONSTER_COUNT; i++) {
-    var xPos = (Math.floor( Math.random() * 50 / 1 ) + 1) * charWidth,
-        yPos = (Math.floor( Math.random() * 33 / 1 ) + 1) * charHeight;
-    console.log("created monster at", xPos, yPos);
-
-    positions.push([xPos, yPos]);
-  }
-
-  return positions;
-};
-
-var drawMonsters = function(positions) {
-  ctx.fillStyle = "#BADA55";
-  for (var i = 0; i < positions.length; i++) {
-    ctx.fillText( "m", positions[i][0], positions[i][1] );
-  }
-};
 
 start();
