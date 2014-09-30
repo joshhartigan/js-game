@@ -21,6 +21,8 @@ var monsters;
 
 var points = 0;
 
+var updatesSinceLastTick = 0;
+
 var arrayContains = function(array, value) {
   return array.some( function(row) {
     return row.toString() == value.toString();
@@ -133,6 +135,12 @@ var start = function() {
 var update = function() {
   draw();
   checkForWin();
+
+  updatesSinceLastTick += 1;
+  if (updatesSinceLastTick == 5) {
+    updatesSinceLastTick = 0;
+    tick();
+  }
 }
 
 var draw = function() {
@@ -145,6 +153,26 @@ var draw = function() {
   ctx.fillText("@", xPos, yPos);
 
   drawMonsters(monsters);
+};
+
+var tick = function() {
+  // move monsters
+  for (var m = 0; m < monsters.length; m++) {
+    var x = Math.random();
+
+    if ( x < 0.3 && monsters[m][0] < MAX_PLAYER_X ) {
+      monsters[m][0] += charWidth; // move to left
+    } else if ( x < 0.5 && monsters[m][0] > 0 ) {
+      monsters[m][0] -= charWidth; // move to right
+    }
+
+    var y = Math.random();
+    if (y < 0.3 && monsters[m][1] < MAX_PLAYER_Y ) {
+      monsters[m][1] += charHeight; // move down
+    } else if (x < 0.5 && monsters[m][1] > charHeight ) {
+      monsters[m][1] -= charHeight; // move up
+    }
+  }
 };
 
 var checkForWin = function() {
@@ -184,4 +212,3 @@ var drawMonsters = function(positions) {
 };
 
 start();
-
